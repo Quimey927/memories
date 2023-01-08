@@ -57,7 +57,7 @@ const Form = ({ currentId, setCurrentId }) => {
   };
 
   const handleTagsChange = (evt) => {
-    const newTags = evt.target.value;
+    const newTags = evt.target.value.split(',');
     setPostData((prevData) => {
       return {
         ...prevData,
