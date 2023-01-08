@@ -19,8 +19,8 @@ const Posts = ({ setCurrentId }) => {
       spacing={3}
     >
       {posts.map((post) => (
-        <Grid item xs={12} md={6}>
-          <Post key={post._id} post={post} setCurrentId={setCurrentId} />
+        <Grid key={post._id} item xs={12} md={6}>
+          <Post post={post} setCurrentId={setCurrentId} />
         </Grid>
       ))}
     </Grid>
