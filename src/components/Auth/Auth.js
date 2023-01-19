@@ -8,50 +8,58 @@ import {
   Container,
 } from '@material-ui/core';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import { GoogleLogin, googleLogout } from '@react-oauth/google';
-import jwt_decode from 'jwt-decode';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
 import Input from './Input';
+import { signin, signup } from '../../actions/auth';
 import useStyles from './styles';
+
+const initialState = {
+  firstName: '',
+  lastName: '',
+  email: '',
+  password: '',
+  confirmPassword: ' ',
+};
 
 const Auth = () => {
   const classes = useStyles();
   const [showPassword, setShowPassword] = useState(false);
   const [isSignup, setIsSignup] = useState(false);
+  const [formData, setFormData] = useState(initialState);
   const dispatch = useDispatch();
   const history = useHistory();
-
-  console.log('GOOGLELOGOUT', googleLogout);
 
   const handleShowPassword = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
   };
 
-  const handleChange = () => {};
+  const handleChange = (evt) => {
+    const key = evt.target.name;
+    const newValue = evt.target.value;
 
-  const handleSubmit = (evt) => {};
+    setFormData((prevData) => {
+      return {
+        ...prevData,
+        [key]: newValue,
+      };
+    });
+  };
+
+  const handleSubmit = (evt) => {
+    evt.preventDefault();
+
+    if (isSignup) {
+      dispatch(signup(formData, history));
+    } else {
+      dispatch(signin(formData, history));
+    }
+  };
 
   const switchMode = () => {
     setIsSignup((prevIsSignup) => !prevIsSignup);
     setShowPassword(false);
-  };
-
-  const googleSuccess = async (res) => {
-    const result = jwt_decode(res?.credential);
-
-    try {
-      dispatch({ type: 'AUTH', data: { result } });
-
-      history.push('/');
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const googleError = (err) => {
-    console.log(err);
   };
 
   return (
@@ -112,8 +120,6 @@ const Auth = () => {
           >
             {isSignup ? 'Sign Up' : 'Sign In'}
           </Button>
-
-          <GoogleLogin onSuccess={googleSuccess} onError={googleError} />
 
           <Grid container justifyContent="flex-end">
             <Grid item>
