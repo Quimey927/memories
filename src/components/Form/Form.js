@@ -15,9 +15,10 @@ const initialData = {
 
 const Form = ({ currentId, setCurrentId }) => {
   const [postData, setPostData] = useState(initialData);
-  const post = useSelector((state) =>
-    currentId ? state.posts.find((p) => p._id === currentId) : null
-  );
+
+  const { posts } = useSelector((state) => state.posts);
+  const post = currentId ? posts.find((p) => p._id === currentId) : null;
+
   const dispatch = useDispatch();
   const classes = useStyles();
   const user = JSON.parse(localStorage.getItem('profile'));
@@ -95,7 +96,7 @@ const Form = ({ currentId, setCurrentId }) => {
   }
 
   return (
-    <Paper className={classes.paper}>
+    <Paper className={classes.paper} elevation={6}>
       <form
         autoComplete="off"
         noValidate
