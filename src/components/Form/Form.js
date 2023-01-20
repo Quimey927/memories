@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { TextField, Button, Typography, Paper } from '@material-ui/core';
 import FileBase from 'react-file-base64';
 import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 
 import useStyles from './styles';
 import { createPost, updatePost } from '../../actions/posts';
@@ -15,11 +16,13 @@ const initialData = {
 
 const Form = ({ currentId, setCurrentId }) => {
   const [postData, setPostData] = useState(initialData);
-
-  const { posts } = useSelector((state) => state.posts);
-  const post = currentId ? posts.find((p) => p._id === currentId) : null;
-
+  const post = useSelector((state) =>
+    currentId
+      ? state.posts.posts.find((message) => message._id === currentId)
+      : null
+  );
   const dispatch = useDispatch();
+  const history = useHistory();
   const classes = useStyles();
   const user = JSON.parse(localStorage.getItem('profile'));
 
@@ -74,7 +77,7 @@ const Form = ({ currentId, setCurrentId }) => {
         updatePost(currentId, { ...postData, name: user?.result?.name })
       );
     } else {
-      dispatch(createPost({ ...postData, name: user?.result?.name }));
+      dispatch(createPost({ ...postData, name: user?.result?.name }, history));
     }
 
     clear();
@@ -87,7 +90,7 @@ const Form = ({ currentId, setCurrentId }) => {
 
   if (!user?.result?.name) {
     return (
-      <Paper className={classes.paper}>
+      <Paper className={classes.paper} elevation={6}>
         <Typography variant="h6" align="center">
           Please Sign In to create your own memories and like other's memories.
         </Typography>

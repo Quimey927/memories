@@ -7,7 +7,6 @@ import {
   CardMedia,
   Button,
   Typography,
-  ButtonBase,
 } from '@material-ui/core';
 import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
 import ThumbUpAltOutlined from '@material-ui/icons/ThumbUpAltOutlined';
@@ -27,9 +26,7 @@ const Post = ({ post, setCurrentId }) => {
 
   const Likes = () => {
     if (post.likes.length > 0) {
-      return post.likes.find(
-        (like) => like === (user?.result?.googleId || user?.result?._id)
-      ) ? (
+      return post.likes.find((like) => like === user?.result?._id) ? (
         <>
           <ThumbUpAltIcon fontSize="small" />
           &nbsp;
@@ -65,7 +62,7 @@ const Post = ({ post, setCurrentId }) => {
 
   return (
     <Card className={classes.card} raised elevation={6}>
-      <ButtonBase className={classes.cardAction} onClick={openPost}>
+      <div className={classes.cardAction} onClick={openPost}>
         <CardMedia
           className={classes.media}
           image={post.selectedFile}
@@ -77,8 +74,7 @@ const Post = ({ post, setCurrentId }) => {
             {moment(post.createdAt).fromNow()}
           </Typography>
         </div>
-        {(user?.result?.googleId === post?.creator ||
-          user?.result?._id === post?.creator) && (
+        {user?.result?._id === post?.creator && (
           <div className={classes.overlay2}>
             <Button
               style={{ color: 'white' }}
@@ -88,7 +84,7 @@ const Post = ({ post, setCurrentId }) => {
                 setCurrentId(post._id);
               }}
             >
-              <MoreHorizIcon fontSize="default" />
+              <MoreHorizIcon fontSize="medium" />
             </Button>
           </div>
         )}
@@ -106,7 +102,7 @@ const Post = ({ post, setCurrentId }) => {
             {post.message}
           </Typography>
         </CardContent>
-      </ButtonBase>
+      </div>
       <CardActions className={classes.cardActions}>
         <Button
           size="small"
@@ -116,8 +112,7 @@ const Post = ({ post, setCurrentId }) => {
         >
           <Likes />
         </Button>
-        {(user?.result?.googleId === post?.creator ||
-          user?.result?._id === post?.creator) && (
+        {user?.result?._id === post?.creator && (
           <Button size="small" color="primary" onClick={deletePostHandler}>
             <DeleteIcon fontSize="small" />
             Delete
