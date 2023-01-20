@@ -1,4 +1,5 @@
 import {
+  FETCH_POST,
   FETCH_ALL,
   FETCH_BY_SEARCH,
   CREATE,
@@ -10,6 +11,11 @@ import {
 
 export default (state = { isLoading: true, posts: [] }, action) => {
   switch (action.type) {
+    case FETCH_POST:
+      return {
+        ...state,
+        post: action.payload,
+      };
     case FETCH_ALL:
       return {
         ...state,
