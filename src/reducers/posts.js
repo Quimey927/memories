@@ -5,6 +5,7 @@ import {
   CREATE,
   UPDATE,
   DELETE,
+  COMMENT,
   START_LOADING,
   END_LOADING,
 } from '../constants/actionTypes';
@@ -44,6 +45,13 @@ export default (state = { isLoading: true, posts: [] }, action) => {
       return {
         ...state,
         posts: state.posts.filter((post) => post._id !== action.payload),
+      };
+    case COMMENT:
+      return {
+        ...state,
+        posts: state.posts.map((post) =>
+          post._id === action.payload._id ? action.payload : post
+        ),
       };
     case START_LOADING:
       return {
