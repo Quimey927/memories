@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import {
   Card,
@@ -22,22 +22,36 @@ const Post = ({ post, setCurrentId }) => {
   const dispatch = useDispatch();
   const classes = useStyles();
   const history = useHistory();
+  const [likes, setLikes] = useState(post?.likes);
   const user = JSON.parse(localStorage.getItem('profile'));
 
+  const userId = user?.result?._id;
+  const hasLikedPost = post.likes.find((like) => like === userId);
+
+  const handleLike = () => {
+    dispatch(likePost(post._id));
+
+    if (hasLikedPost) {
+      setLikes(post.likes.filter((id) => id !== userId));
+    } else {
+      setLikes([...post.likes, userId]);
+    }
+  };
+
   const Likes = () => {
-    if (post.likes.length > 0) {
-      return post.likes.find((like) => like === user?.result?._id) ? (
+    if (likes.length > 0) {
+      return hasLikedPost ? (
         <>
           <ThumbUpAltIcon fontSize="small" />
           &nbsp;
-          {post.likes.length > 2
-            ? `You and ${post.likes.length - 1} others`
-            : `${post.likes.length} like${post.likes.length > 1 ? 's' : ''}`}
+          {likes.length > 2
+            ? `You and ${likes.length - 1} others`
+            : `${likes.length} like${likes.length > 1 ? 's' : ''}`}
         </>
       ) : (
         <>
           <ThumbUpAltOutlined fontSize="small" />
-          &nbsp;{post.likes.length} {post.likes.length === 1 ? 'Like' : 'Likes'}
+          &nbsp;{likes.length} {likes.length === 1 ? 'Like' : 'Likes'}
         </>
       );
     }
@@ -48,10 +62,6 @@ const Post = ({ post, setCurrentId }) => {
         &nbsp;Like
       </>
     );
-  };
-
-  const likePostHandler = () => {
-    dispatch(likePost(post._id));
   };
 
   const deletePostHandler = () => {
@@ -74,7 +84,7 @@ const Post = ({ post, setCurrentId }) => {
             {moment(post.createdAt).fromNow()}
           </Typography>
         </div>
-        {user?.result?._id === post?.creator && (
+        {userId === post?.creator && (
           <div className={classes.overlay2}>
             <Button
               style={{ color: 'white' }}
@@ -108,11 +118,11 @@ const Post = ({ post, setCurrentId }) => {
           size="small"
           color="primary"
           disabled={!user?.result}
-          onClick={likePostHandler}
+          onClick={handleLike}
         >
           <Likes />
         </Button>
-        {user?.result?._id === post?.creator && (
+        {userId === post?.creator && (
           <Button size="small" color="primary" onClick={deletePostHandler}>
             <DeleteIcon fontSize="small" />
             Delete
